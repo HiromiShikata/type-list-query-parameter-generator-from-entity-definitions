@@ -80,8 +80,8 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          set -eo pipefail
-          RESPONSE=$(curl -fsS -X POST \
+          set -uo pipefail
+          if RESPONSE=$(curl -fsS -X POST \
             -H "Authorization: bearer $GH_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
@@ -90,11 +90,11 @@ jobs:
                 "id": "'"${{ steps.get_pr_id.outputs.node_id }}"'"
               }
             }' \
-            "https://api.github.com/graphql") || {
+            "https://api.github.com/graphql"); then
+            echo "$RESPONSE"
+            if echo "$RESPONSE" | jq -e '.errors' >/dev/null; then
+              echo "::warning::Failed to enable auto-merge: $(echo "$RESPONSE" | jq -c '.errors')"
+            fi
+          else
             echo "::warning::Failed to call GitHub API for auto-merge"
-            exit 0
-          }
-          echo "$RESPONSE"
-          if echo "$RESPONSE" | jq -e '.errors' >/dev/null; then
-            echo "::warning::Failed to enable auto-merge: $(echo "$RESPONSE" | jq -c '.errors')"
           fi
