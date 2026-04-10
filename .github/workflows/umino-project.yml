@@ -186,7 +186,7 @@ jobs:
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         with:
           exclude-branches: 'release/**, dependabot/**, project-common/**, renovate/**'
-          github-token: ${{ secrets.GH_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           loose-matching: true
       - name: Get the output
         run: echo "How many linked issues? ${{ steps.check-linked-issues.outputs.linked_issues_count }}"
