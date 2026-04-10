@@ -178,6 +178,9 @@ jobs:
   check_pull_requests_to_link_issues:
     runs-on: ubuntu-latest
     name: Check linked issues in pull requests
+    permissions:
+      issues: read
+      pull-requests: read
     if: >-
       (github.event_name == 'pull_request')
     steps:

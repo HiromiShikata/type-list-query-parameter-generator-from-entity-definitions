@@ -22,17 +22,37 @@ jobs:
 
       - name: Create Pull Request
         id: create_pr
-        continue-on-error: true
-        uses: repo-sync/pull-request@v2
-        with:
-          github_token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
-          destination_branch: 'main'
-          source_branch: ''
-          pr_title: '${{ steps.branch_name.outputs.branch }}'
-          pr_body: |
-            :magic_wand: :sparkles:
-
-          pr_draft: false
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -eo pipefail
+          BRANCH="${{ steps.branch_name.outputs.branch }}"
+          EXISTING=$(curl -fsS \
+            -H "Authorization: token $GH_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/pulls?head=${{ github.repository_owner }}:$BRANCH&base=main&state=open")
+          PR_NUMBER=$(echo "$EXISTING" | jq -r '.[0].number // empty')
+          if [ -n "$PR_NUMBER" ]; then
+            echo "Pull request already exists: #$PR_NUMBER"
+          else
+            JSON=$(jq -n \
+              --arg title "$BRANCH" \
+              --arg head "$BRANCH" \
+              '{title: $title, head: $head, base: "main", body: ":magic_wand: :sparkles:\n", draft: false}')
+            NEW_PR=$(curl -fsS -X POST \
+              -H "Authorization: token $GH_TOKEN" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${{ github.repository }}/pulls" \
+              -d "$JSON")
+            PR_NUMBER=$(echo "$NEW_PR" | jq -r '.number // empty')
+            if [ -z "$PR_NUMBER" ]; then
+              echo "Failed to create pull request" >&2
+              echo "$NEW_PR" >&2
+              exit 1
+            fi
+            echo "Created pull request: #$PR_NUMBER"
+          fi
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
 
       - name: Assign PR to author
         if: steps.create_pr.outputs.pr_number
@@ -47,16 +67,22 @@ jobs:
         if: steps.create_pr.outputs.pr_number
         id: get_pr_id
         run: |
-          PR_DATA=$(curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.create_pr.outputs.pr_number }}")
+          PR_DATA=$(curl -fsS -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/${{ github.repository }}/pulls/${{ steps.create_pr.outputs.pr_number }}")
           PR_ID=$(echo "$PR_DATA" | jq -r '.node_id')
+          if [ -z "$PR_ID" ] || [ "$PR_ID" = "null" ]; then
+            echo "Failed to retrieve a valid PR node_id for PR #${{ steps.create_pr.outputs.pr_number }}" >&2
+            exit 1
+          fi
           echo "node_id=$PR_ID" >> "$GITHUB_OUTPUT"
 
       - name: Enable Auto Merge for PR
         if: steps.create_pr.outputs.pr_number
-        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          RESPONSE=$(curl -s -X POST \
-            -H "Authorization: bearer ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}" \
+          set -eo pipefail
+          RESPONSE=$(curl -fsS -X POST \
+            -H "Authorization: bearer $GH_TOKEN" \
             -H "Content-Type: application/json" \
             -d '{
               "query": "mutation($id: ID!) { enablePullRequestAutoMerge(input: { pullRequestId: $id }) { clientMutationId } }",
@@ -64,9 +90,11 @@ jobs:
                 "id": "'"${{ steps.get_pr_id.outputs.node_id }}"'"
               }
             }' \
-            "https://api.github.com/graphql")
+            "https://api.github.com/graphql") || {
+            echo "::warning::Failed to call GitHub API for auto-merge"
+            exit 0
+          }
           echo "$RESPONSE"
           if echo "$RESPONSE" | jq -e '.errors' >/dev/null; then
-            echo "Failed to enable auto merge"
-            exit 1
+            echo "::warning::Failed to enable auto-merge: $(echo "$RESPONSE" | jq -c '.errors')"
           fi
