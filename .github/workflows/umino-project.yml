@@ -207,6 +207,9 @@ jobs:
   check_pull_requests_to_link_issues:
     runs-on: ubuntu-latest
     name: Check linked issues in pull requests
+    permissions:
+      issues: read
+      pull-requests: read
     if: >-
       (github.event_name == 'pull_request')
     steps:
@@ -215,7 +218,7 @@ jobs:
         if: github.event.pull_request.user.login != 'dependabot[bot]'
         with:
           exclude-branches: 'release/**, dependabot/**, project-common/**, renovate/**'
-          github-token: ${{ secrets.GH_TOKEN }}
+          github-token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           loose-matching: true
       - name: Get the output
         run: echo "How many linked issues? ${{ steps.check-linked-issues.outputs.linked_issues_count }}"
