@@ -228,7 +228,7 @@ jobs:
         if: >-
           github.event_name == 'issues' &&
           github.event.action == 'opened'
-        uses: pozil/auto-assign-issue@v4.0.0
+        uses: pozil/auto-assign-issue@v4.0.1
         with:
           assignees: HiromiShikata
           repo-token: ${{ steps.app-token.outputs.token }}
@@ -236,7 +236,7 @@ jobs:
         if: >-
           github.event_name == 'pull_request' &&
           github.event.action == 'opened'
-        uses: pozil/auto-assign-issue@v4.0.0
+        uses: pozil/auto-assign-issue@v4.0.1
         with:
           assignees: HiromiShikata
           repo-token: ${{ steps.app-token.outputs.token }}
