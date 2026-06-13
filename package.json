@@ -1,5 +1,5 @@
 {
-  "name": "template-typescript-npm-cli",
+  "name": "type-list-query-parameter-generator-from-entity-definitions",
   "version": "1.1.0",
   "description": "",
   "main": "bin/index.js",
@@ -15,18 +15,18 @@
     "test": "jest"
   },
   "bin": {
-    "template-typescript-npm-cli": "./bin/adapter/entry-points/cli/index.js"
+    "type-list-query-parameter-generator-from-entity-definitions": "./bin/adapter/entry-points/cli/index.js"
   },
   "types": "types/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/HiromiShikata/template-typescript-npm-cli.git"
+    "url": "git+https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/HiromiShikata/template-typescript-npm-cli/issues"
+    "url": "https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions/issues"
   },
   "publishConfig": {
     "provenance": true
@@ -42,7 +42,7 @@
       "main"
     ]
   },
-  "homepage": "https://github.com/HiromiShikata/template-typescript-npm-cli#readme",
+  "homepage": "https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions#readme",
   "devDependencies": {
     "@semantic-release/changelog": "^6.0.3",
     "@semantic-release/commit-analyzer": "^13.0.0",
