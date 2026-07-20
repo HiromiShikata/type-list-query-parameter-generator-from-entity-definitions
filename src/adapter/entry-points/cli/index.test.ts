@@ -3,7 +3,7 @@ import { execSync } from 'child_process';
 describe('commander program', () => {
   it('should output help contents', () => {
     const output = execSync(
-      'npx ts-node ./src/adapter/entry-points/cli/index.ts -h',
+      'npx tsx ./src/adapter/entry-points/cli/index.ts -h',
     ).toString();
 
     expect(output.trim()).toEqual(`Usage: Example CLI [options] <path>
@@ -18,7 +18,7 @@ Options:
   });
   it('should output file contents', () => {
     const output = execSync(
-      'npx ts-node ./src/adapter/entry-points/cli/index.ts ./testdata/src/domain/entities',
+      'npx tsx ./src/adapter/entry-points/cli/index.ts ./testdata/src/domain/entities',
     ).toString();
 
     expect(output.trim()).toEqual(

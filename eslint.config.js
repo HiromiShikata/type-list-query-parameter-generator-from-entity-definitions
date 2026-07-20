@@ -1,7 +1,6 @@
 const fs = require('fs');
 const js = require('@eslint/js');
-const tsPlugin = require('@typescript-eslint/eslint-plugin');
-const tsParser = require('@typescript-eslint/parser');
+const babelParser = require('@babel/eslint-parser');
 const importX = require('eslint-plugin-import-x');
 const noTypeAssertion = require('eslint-plugin-no-type-assertion');
 const unusedImports = require('eslint-plugin-unused-imports');
@@ -14,30 +13,31 @@ const gitignorePatterns = fs
 module.exports = [
   { ignores: gitignorePatterns },
   js.configs.recommended,
-  ...tsPlugin.configs['flat/recommended'],
-  ...tsPlugin.configs['flat/recommended-type-checked'],
-  importX.flatConfigs.typescript,
   {
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
-      parser: tsParser,
+      parser: babelParser,
       parserOptions: {
         ecmaVersion: 2020,
-        project: ['tsconfig.json'],
+        requireConfigFile: true,
         sourceType: 'module',
       },
     },
     plugins: {
       'no-type-assertion': noTypeAssertion,
       'unused-imports': unusedImports,
+      'import-x': importX,
+    },
+    settings: {
+      'import-x/extensions': ['.ts', '.tsx', '.js', '.jsx'],
+      'import-x/resolver': {
+        typescript: true,
+      },
     },
     rules: {
-      '@typescript-eslint/require-await': 'off',
-      '@typescript-eslint/no-non-null-assertion': 'error',
+      'no-undef': 'off',
+      'no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'no-type-assertion/no-type-assertion': 'error',
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        { argsIgnorePattern: '^_' },
-      ],
       'import-x/no-restricted-paths': [
         'error',
         {
