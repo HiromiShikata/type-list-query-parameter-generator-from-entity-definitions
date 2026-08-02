@@ -46,7 +46,7 @@
   "devDependencies": {
     "@babel/eslint-parser": "8.0.1",
     "@eslint/js": "^10.0.1",
-    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@swc/core": "1.15.46",
     "@swc/jest": "0.2.39",
