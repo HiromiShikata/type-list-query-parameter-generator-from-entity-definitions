@@ -4,47 +4,125 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-Welcome to type-list-query-parameter-generator-from-entity-definitions, this template os for npm command-line.
+Generate `{EntityName}ListQuery` TypeScript interfaces from a flat directory of entity definition files. Sort and filter fields are typed as `keyof {EntityName}` via a computed relative import.
 
-## How to use this template
-
-1. Grant write permission to gh-actions
-
-   https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions/settings/actions
-
-1. Set secrets (optional)
-
-   https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions/settings/secrets/actions
-   - [GH_TOKEN](https://github.com/settings/tokens)
-   - [NPM_TOKEN](https://www.npmjs.com/settings/hiromi/tokens)
-   - [RELEASE_APP_PRIVATE_KEY](https://github.com/settings/apps/semantic-release-changelog)
-
-1. Remove `How to use this template` section from README.md
-
-## Usage 🛠️
-
-Here's how you can use type-list-query-parameter-generator-from-entity-definitions:
-TODO: copy output of `npx type-list-query-parameter-generator-from-entity-definitions --help`
+## Usage
 
 ```
-Usage: Replace all words [options] <targetDirectoryPath> <beforeWord> <afterWord>
+type-list-query-parameter-generator-from-entity-definitions <entityDefinitionsPath> <outputPath>
+```
 
 Arguments:
-  targetDirectoryPath  Path to the target directory where replacements are to be made
-  beforeWord           Word to be replaced throughout the target directory
-  afterWord            Word to replace the beforeWord with
 
-Options:
+- `entityDefinitionsPath` — directory containing entity TypeScript files (direct files only, no recursion); files whose stem starts with an uppercase letter are treated as entities
+- `outputPath` — directory where generated `{EntityName}ListQuery.ts` files are written; created if absent
 
+## Example
+
+Given `src/domain/entities/Order.ts`:
+
+```typescript
+export type Order = {
+  id: string;
+  status: 'pending' | 'shipped' | 'delivered';
+  total: number;
+};
 ```
 
-## Example 📖
-
-Here's a quick example to illustrate its usage:
-TODO:
+Running:
 
 ```
-npx type-list-query-parameter-generator-from-entity-definitions
+npx type-list-query-parameter-generator-from-entity-definitions src/domain/entities src/generated/list-queries
+```
+
+Generates `src/generated/list-queries/OrderListQuery.ts`:
+
+```typescript
+import type { Order } from '../../domain/entities/Order';
+
+export interface OrderListQuery {
+  pagination: {
+    limit: number;
+    offset: number;
+  };
+  sort: {
+    sortBy: keyof Order;
+    order: 'asc' | 'desc';
+  };
+  filters: ReadonlyArray<{
+    field: keyof Order;
+    operator: 'eq' | 'neq' | 'gt' | 'gte' | 'lt' | 'lte' | 'in' | 'like';
+    value: string | number | boolean | ReadonlyArray<string | number>;
+  }>;
+}
+```
+
+## Programmatic API
+
+Install and import:
+
+```typescript
+import {
+  ListQueryTypeGenerateUseCase,
+  EntityDefinition,
+  ListQueryType,
+  EntityDefinitionRepository,
+  ListQueryTypeRepository,
+} from 'type-list-query-parameter-generator-from-entity-definitions';
+```
+
+### `ListQueryTypeGenerateUseCase`
+
+Orchestrates generation. Accepts an `EntityDefinitionRepository` and a `ListQueryTypeRepository` implementation.
+
+```typescript
+const useCase = new ListQueryTypeGenerateUseCase(entityRepo, listQueryRepo);
+await useCase.run(entityDefinitionsPath, outputPath);
+```
+
+### `EntityDefinition`
+
+Represents a discovered entity file.
+
+```typescript
+const entity = new EntityDefinition('Order', '/absolute/path/Order.ts');
+entity.name; // 'Order'
+entity.filePath; // '/absolute/path/Order.ts'
+```
+
+### `ListQueryType`
+
+Represents a generated list-query type file.
+
+```typescript
+const lqt = new ListQueryType(
+  'Order',
+  '/entities/Order.ts',
+  '/output/OrderListQuery.ts',
+);
+lqt.entityName; // 'Order'
+lqt.entityFilePath; // '/entities/Order.ts'
+lqt.outputFilePath; // '/output/OrderListQuery.ts'
+```
+
+### `EntityDefinitionRepository`
+
+Base class for entity-discovery adapters. Extend and override `getAll`.
+
+```typescript
+class MyEntityRepo extends EntityDefinitionRepository {
+  async getAll(entityDefinitionsPath: string): Promise<EntityDefinition[]> { ... }
+}
+```
+
+### `ListQueryTypeRepository`
+
+Base class for list-query-type persistence adapters. Extend and override `save`.
+
+```typescript
+class MyListQueryRepo extends ListQueryTypeRepository {
+  async save(listQueryType: ListQueryType): Promise<void> { ... }
+}
 ```
 
 ## Contributing
