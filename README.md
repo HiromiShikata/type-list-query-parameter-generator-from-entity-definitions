@@ -57,6 +57,74 @@ export interface OrderListQuery {
 }
 ```
 
+## Programmatic API
+
+Install and import:
+
+```typescript
+import {
+  ListQueryTypeGenerateUseCase,
+  EntityDefinition,
+  ListQueryType,
+  EntityDefinitionRepository,
+  ListQueryTypeRepository,
+} from 'type-list-query-parameter-generator-from-entity-definitions';
+```
+
+### `ListQueryTypeGenerateUseCase`
+
+Orchestrates generation. Accepts an `EntityDefinitionRepository` and a `ListQueryTypeRepository` implementation.
+
+```typescript
+const useCase = new ListQueryTypeGenerateUseCase(entityRepo, listQueryRepo);
+await useCase.run(entityDefinitionsPath, outputPath);
+```
+
+### `EntityDefinition`
+
+Represents a discovered entity file.
+
+```typescript
+const entity = new EntityDefinition('Order', '/absolute/path/Order.ts');
+entity.name; // 'Order'
+entity.filePath; // '/absolute/path/Order.ts'
+```
+
+### `ListQueryType`
+
+Represents a generated list-query type file.
+
+```typescript
+const lqt = new ListQueryType(
+  'Order',
+  '/entities/Order.ts',
+  '/output/OrderListQuery.ts',
+);
+lqt.entityName; // 'Order'
+lqt.entityFilePath; // '/entities/Order.ts'
+lqt.outputFilePath; // '/output/OrderListQuery.ts'
+```
+
+### `EntityDefinitionRepository`
+
+Base class for entity-discovery adapters. Extend and override `getAll`.
+
+```typescript
+class MyEntityRepo extends EntityDefinitionRepository {
+  async getAll(entityDefinitionsPath: string): Promise<EntityDefinition[]> { ... }
+}
+```
+
+### `ListQueryTypeRepository`
+
+Base class for list-query-type persistence adapters. Extend and override `save`.
+
+```typescript
+class MyListQueryRepo extends ListQueryTypeRepository {
+  async save(listQueryType: ListQueryType): Promise<void> { ... }
+}
+```
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
