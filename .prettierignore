@@ -1,8 +1,10 @@
 *.xml
+*.toml
 .gitignore
 .prettierignore
 .gitkeep
 *.sh
+.npmrc
 .idea
 reports
 dist
