@@ -75,4 +75,10 @@ describe('FileSystemEntityDefinitionRepository', () => {
     const result = await repo.getAll(tmpDir);
     expect(result).toEqual([]);
   });
+
+  it('throws when directory does not exist', async () => {
+    await expect(
+      repo.getAll('/nonexistent/path/that/does/not/exist'),
+    ).rejects.toThrow();
+  });
 });

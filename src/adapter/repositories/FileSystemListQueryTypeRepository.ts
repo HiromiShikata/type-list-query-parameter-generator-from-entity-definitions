@@ -45,8 +45,8 @@ export class FileSystemListQueryTypeRepository {
       `\n` +
       `export interface ${entityName}ListQuery {\n` +
       `  pagination: {\n` +
-      `    page: number;\n` +
-      `    pageSize: number;\n` +
+      `    limit: number;\n` +
+      `    offset: number;\n` +
       `  };\n` +
       `  sort: {\n` +
       `    sortBy: keyof ${entityName};\n` +

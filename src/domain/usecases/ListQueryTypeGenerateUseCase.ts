@@ -1,25 +1,17 @@
 import * as path from 'path';
+import { EntityDefinitionRepository } from './adapter-interfaces/EntityDefinitionRepository';
+import { ListQueryTypeRepository } from './adapter-interfaces/ListQueryTypeRepository';
 import { ListQueryType } from '../entities/ListQueryType';
 
+export { EntityDefinitionRepository, ListQueryTypeRepository };
+
 export class ListQueryTypeGenerateUseCase {
-  private readonly entityDefinitionRepository: {
-    getAll(
-      entityDefinitionsPath: string,
-    ): Promise<{ name: string; filePath: string }[]>;
-  };
-  private readonly listQueryTypeRepository: {
-    save(listQueryType: ListQueryType): Promise<void>;
-  };
+  private readonly entityDefinitionRepository: EntityDefinitionRepository;
+  private readonly listQueryTypeRepository: ListQueryTypeRepository;
 
   constructor(
-    entityDefinitionRepository: {
-      getAll(
-        entityDefinitionsPath: string,
-      ): Promise<{ name: string; filePath: string }[]>;
-    },
-    listQueryTypeRepository: {
-      save(listQueryType: ListQueryType): Promise<void>;
-    },
+    entityDefinitionRepository: EntityDefinitionRepository,
+    listQueryTypeRepository: ListQueryTypeRepository,
   ) {
     this.entityDefinitionRepository = entityDefinitionRepository;
     this.listQueryTypeRepository = listQueryTypeRepository;

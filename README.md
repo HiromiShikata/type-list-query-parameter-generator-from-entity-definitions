@@ -42,8 +42,8 @@ import type { Order } from '../../domain/entities/Order';
 
 export interface OrderListQuery {
   pagination: {
-    page: number;
-    pageSize: number;
+    limit: number;
+    offset: number;
   };
   sort: {
     sortBy: keyof Order;

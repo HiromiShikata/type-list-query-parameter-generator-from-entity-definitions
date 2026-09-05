@@ -2,6 +2,8 @@ import { EntityDefinition } from '../../entities/EntityDefinition';
 
 export { EntityDefinition };
 
-export interface EntityDefinitionRepository {
-  getAll(entityDefinitionsPath: string): Promise<EntityDefinition[]>;
+export class EntityDefinitionRepository {
+  getAll(_entityDefinitionsPath: string): Promise<EntityDefinition[]> {
+    throw new Error('Not implemented');
+  }
 }

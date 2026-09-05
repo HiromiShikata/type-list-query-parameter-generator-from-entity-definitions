@@ -2,6 +2,8 @@ import { ListQueryType } from '../../entities/ListQueryType';
 
 export { ListQueryType };
 
-export interface ListQueryTypeRepository {
-  save(listQueryType: ListQueryType): Promise<void>;
+export class ListQueryTypeRepository {
+  save(_listQueryType: ListQueryType): Promise<void> {
+    throw new Error('Not implemented');
+  }
 }
