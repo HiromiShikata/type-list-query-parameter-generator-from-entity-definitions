@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "8.0.5",
+    "@babel/eslint-parser": "8.0.6",
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.0",
