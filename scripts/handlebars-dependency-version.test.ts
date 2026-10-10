@@ -2,9 +2,8 @@ import fs from 'fs';
 
 describe('handlebars dependency version', () => {
   it('resolves an installed handlebars package whose version is at least 4.7.10', () => {
-    const handlebarsPackageJsonPath = require.resolve(
-      'handlebars/package.json',
-    );
+    const handlebarsPackageJsonPath =
+      require.resolve('handlebars/package.json');
     const handlebarsPackageJson = JSON.parse(
       fs.readFileSync(handlebarsPackageJsonPath, 'utf8'),
     );
