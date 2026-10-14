@@ -44,12 +44,12 @@
   },
   "homepage": "https://github.com/HiromiShikata/type-list-query-parameter-generator-from-entity-definitions#readme",
   "devDependencies": {
-    "@babel/eslint-parser": "8.0.6",
+    "@babel/eslint-parser": "8.0.7",
     "@eslint/js": "^10.0.1",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/commit-analyzer": "^13.0.0",
     "@semantic-release/npm": "^13.1.0",
-    "@swc/core": "1.16.2",
+    "@swc/core": "1.16.13",
     "@swc/jest": "0.2.39",
     "@types/jest": "^30.0.0",
     "@typescript/native-preview": "7.0.0-dev.20260707.2",
@@ -72,5 +72,8 @@
   "dependencies": {
     "commander": "^15.0.0",
     "dotenv": "^18.0.0"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.12"
   }
 }
