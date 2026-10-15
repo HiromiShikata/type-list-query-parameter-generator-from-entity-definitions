@@ -37,6 +37,7 @@ describe('npm bundled dependency version', () => {
     minimumVersion: string;
   }[] = [
     { packageName: 'brace-expansion', minimumVersion: '5.0.12' },
+    { packageName: 'http-cache-semantics', minimumVersion: '4.3.0' },
     { packageName: 'ip-address', minimumVersion: '10.7.1' },
     { packageName: 'postcss-selector-parser', minimumVersion: '7.1.6' },
     { packageName: 'undici', minimumVersion: '6.28.1' },
