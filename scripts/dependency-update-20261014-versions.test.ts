@@ -35,9 +35,9 @@ describe('scheduled dependency update minimum installed versions', () => {
     },
     {
       packageName: '@swc/core',
-      minimumVersion: '1.16.13',
+      minimumVersion: '1.16.18',
       packageJsonLocation: 'devDependencies',
-      packageJsonMinimumVersion: '1.16.13',
+      packageJsonMinimumVersion: '1.16.18',
     },
     {
       packageName: 'conventional-changelog-conventionalcommits',
@@ -47,7 +47,7 @@ describe('scheduled dependency update minimum installed versions', () => {
     },
     {
       packageName: 'dotenv',
-      minimumVersion: '18.0.6',
+      minimumVersion: '18.0.7',
       packageJsonLocation: 'dependencies',
       packageJsonMinimumVersion: '18.0.0',
     },
@@ -59,7 +59,7 @@ describe('scheduled dependency update minimum installed versions', () => {
     },
     {
       packageName: 'prettier',
-      minimumVersion: '3.9.9',
+      minimumVersion: '3.9.10',
       packageJsonLocation: 'devDependencies',
       packageJsonMinimumVersion: '3.2.5',
     },
