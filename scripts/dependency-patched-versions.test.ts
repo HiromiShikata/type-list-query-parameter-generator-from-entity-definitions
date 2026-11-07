@@ -43,17 +43,13 @@ const findPackageJsonPaths = (
           }
         }
       }
-      packageJsonPaths.push(
-        ...findPackageJsonPaths(entryPath, packageName),
-      );
+      packageJsonPaths.push(...findPackageJsonPaths(entryPath, packageName));
     }
   }
 
   return packageJsonPaths;
 };
 
-// Copies bundled inside the globally installed npm (node_modules/npm/...) are
-// owned by the npm release and cannot be changed by overrides, so they are excluded.
 const findNonBundledPackageJsonPaths = (packageName: string): string[] => {
   const nodeModulesDirectory = path.join(process.cwd(), 'node_modules');
   return findPackageJsonPaths(nodeModulesDirectory, packageName).filter(
