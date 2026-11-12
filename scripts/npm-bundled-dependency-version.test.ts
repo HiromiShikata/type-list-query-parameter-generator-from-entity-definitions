@@ -22,14 +22,14 @@ const isAtLeastVersion = (
 };
 
 describe('npm bundled dependency version', () => {
-  it('resolves an installed npm package whose version is at least 11.21.1', () => {
+  it('resolves an installed npm package whose version is at least 11.21.2', () => {
     const npmPackageJsonPath = require.resolve('npm/package.json');
     const npmPackageJson = JSON.parse(
       fs.readFileSync(npmPackageJsonPath, 'utf8'),
     );
     const resolvedVersion: string = npmPackageJson.version;
 
-    expect(isAtLeastVersion(resolvedVersion, '11.21.1')).toBe(true);
+    expect(isAtLeastVersion(resolvedVersion, '11.21.2')).toBe(true);
   });
 
   const npmBundledDependencyMinimumVersions: {
@@ -40,7 +40,7 @@ describe('npm bundled dependency version', () => {
     { packageName: 'http-cache-semantics', minimumVersion: '4.3.0' },
     { packageName: 'ip-address', minimumVersion: '10.7.1' },
     { packageName: 'postcss-selector-parser', minimumVersion: '7.1.6' },
-    { packageName: 'undici', minimumVersion: '6.28.1' },
+    { packageName: 'undici', minimumVersion: '6.29.1' },
   ];
 
   test.each(npmBundledDependencyMinimumVersions)(
